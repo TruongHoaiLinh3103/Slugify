@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slugify</title>
+    <link href="./css/main.css" rel="stylesheet" />
+</head>
+<body>
+    <h1 id="slugify">Slugify</h1>
+    <pre class="box-x"><code>npm i slugify</code></pre>
+    <pre class="box-x"><code class="language-js">var slugify = require(&#39;slugify&#39;)
+    
+slugify(&#39;some string&#39;) // some-string
+
+// if you prefer something other than &#39;-&#39; as separator
+slugify(&#39;some string&#39;, &#39;_&#39;)  // some_string
+    </code></pre>
+    <ul>
+       <li>
+          Vanilla ES2015 JavaScript
+          <ul>
+             <li>If you need to use Slugify with older browsers, consider using <a href="https://github.com/simov/slugify/releases/tag/v1.4.7">version 1.4.7</a></li>
+          </ul>
+       </li>
+       <li>No dependencies</li>
+       <li>Coerces foreign symbols to their English equivalent (check out the <a href="https://github.com/simov/slugify/blob/master/config/charmap.json">charMap</a> for more details)</li>
+       <li>Works in the browser (window.slugify) and AMD/CommonJS-flavored module loaders</li>
+    </ul>
+    <h2 id="options">Options</h2>
+    <pre class="box-x"><code class="language-js">slugify(&#39;some string&#39;, {
+    replacement: &#39;-&#39;,  // replace spaces with replacement character, defaults to `-`
+    remove: undefined, // remove characters that match regex, defaults to `undefined`
+    lower: false,      // convert to lower case, defaults to `false`
+    strict: false,     // strip special characters except replacement, defaults to `false`
+    locale: &#39;vi&#39;,      // language code of the locale to use
+    trim: true         // trim leading and trailing replacement chars, defaults to `true`
+})
+    </code></pre>
+    <h2 id="remove">Remove</h2>
+    <p>For example, to remove <code>*+~.()&#39;&quot;!:@</code> from the result slug, you can use <code>slugify(&#39;..&#39;, {remove: /[*+~.()&#39;&quot;!:@]/g})</code>.</p>
+    <ul>
+       <li>If the value of <code>remove</code> is a regular expression, it should be a
+          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Character_Classes">character class</a>
+          and only a character class. It should also use the
+          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/global">global flag</a>.
+          (For example: <code>/[*+~.()&#39;&quot;!:@]/g</code>.) Otherwise, the <code>remove</code> option might not
+          work as expected.
+       </li>
+       <li>If the value of <code>remove</code> is a string, it should be a single character.
+          Otherwise, the <code>remove</code> option might not work as expected.
+       </li>
+    </ul>
+    <h2 id="locales">Locales</h2>
+    <p>The main <code>charmap.json</code> file contains all known characters and their transliteration. All new characters should be added there first. In case you stumble upon a character already set in <code>charmap.json</code>, but not transliterated correctly according to your language, then you have to add those characters in <code>locales.json</code> to override the already existing transliteration in <code>charmap.json</code>, but for your locale only.</p>
+    <p>You can get the correct language code of your language from <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">here</a>.</p>
+    <h2 id="extend">Extend</h2>
+    <p>Out of the box <code>slugify</code> comes with support for a handful of Unicode symbols. For example the <code>☢</code> (radioactive) symbol is not defined in the <a href="https://github.com/simov/slugify/blob/master/config/charmap.json"><code>charMap</code></a> and therefore it will be stripped by default:</p>
+    <pre class="box-x"><code class="language-js">slugify(&#39;unicode ♥ is ☢&#39;) // unicode-love-is
+    </code></pre>
+    <p>However you can extend the supported symbols, or override the existing ones with your own:</p>
+    <pre class="box-x"><code class="language-js">slugify.extend({&#39;☢&#39;: &#39;radioactive&#39;})
+slugify(&#39;unicode ♥ is ☢&#39;) // unicode-love-is-radioactive
+    </code></pre>
+    <p>Keep in mind that the <code>extend</code> method extends/overrides the default <code>charMap</code> for the entire process. In case you need a fresh instance of the slugify&#39;s <code>charMap</code> object you have to clean up the module cache first:</p>
+    <pre class="box-x"><code class="language-js">delete require.cache[require.resolve(&#39;slugify&#39;)]
+var slugify = require(&#39;slugify&#39;)
+    </code></pre>
+</body>
+</html>
